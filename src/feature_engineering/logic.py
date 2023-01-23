@@ -1,6 +1,6 @@
 from feature_engineering.models import Features, db
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, text
 from sqlalchemy.orm import aliased
 
 import json
@@ -66,12 +66,19 @@ class FeatureLogic():
         subquery = db.session.query(
             func.date_format(
                 func.from_days(
-                    func.datediff(func.now(), ft1.birthday)
-                )
+                    func.datediff(ft2.birthday, func.now())
+                ),
+                text("'%Y'")
             ).label("age")
-        ).filter(ft1.employee_id==ft2.employee_id).group_by("age")
+        ).filter(ft2.birthday != None).group_by(text("ft2.age"
+        
+        
+        )).subquery()
+        print(subquery)
+        return ""
+        records = db.session.execute(db.select(ft1.employee_id, func.count(ft1.salary_raise), func.sum(ft1.salary_raise)).group_by(ft1.employee_id).filter(ft1.salary_raise!=-1)).all()
 
-        records = db.session.execute(db.select(aliased(subquery, "age"), Features.employee_id, func.count(Features.salary_raise), func.sum(Features.salary_raise)).group_by(Features.employee_id).filter(Features.salary_raise!=None)).all()
+      
         response = []
         for record in records:
             r = {
