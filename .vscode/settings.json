@@ -1,3 +1,4 @@
 {
-    "python.defaultInterpreterPath": "~/test/python/dev/bin/python"
+    "python.defaultInterpreterPath": "~/test/python/dev/bin/python",
+    "editor.wordWrap": "on"
 }
