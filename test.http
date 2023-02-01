@@ -1,0 +1,43 @@
+http://127.0.0.1:5000/feature_engineering?dbtype=dynamic_feature HTTP/1.1
+content-type: application/json
+
+{
+    "data": [
+        {
+            "employee_id": 0,
+            "entity": "salary_raise",
+            "date": "2020-01-01",
+            "value": 50
+        },
+        {
+            "employee_id": 0,
+            "entity": "salary_raise",
+            "date": "2020-05-01",
+            "value": 60
+        },
+        {
+            "employee_id": 0,
+            "entity": "birthday",
+            "date": "2020-01-01",
+            "value": "1998-01-01"
+        },
+        {
+            "employee_id": 1,
+            "entity": "salary_raise",
+            "date": "2020-02-01",
+            "value": 30
+        },
+        {
+            "employee_id": 1,
+            "entity": "salary_raise",
+            "date": "2020-08-01",
+            "value": 40
+        },
+        {
+            "employee_id": 1,
+            "entity": "birthday",
+            "date": "2020-01-01",
+            "value": "2000-01-01"
+        }
+    ]
+}
