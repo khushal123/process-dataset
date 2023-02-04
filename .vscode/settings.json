@@ -1,4 +1,8 @@
 {
     "python.defaultInterpreterPath": "~/test/python/dev/bin/python",
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "python.formatting.provider": "none",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

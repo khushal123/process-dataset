@@ -7,7 +7,6 @@ import logging
 
 
 class FeatureEngineering(Resource):
-
     def __init__(self) -> None:
         self.logger = logging.getLogger(FeatureEngineering.__name__)
         super().__init__()
@@ -20,20 +19,19 @@ class FeatureEngineering(Resource):
             data = parser.parse_args()
 
             feature_data = data.get("data")
-            feature_logic = LogicFactory().get_logic(
-                dbtype=data.get("dbtype", "feature")).save_fl(feature_data)
-            
-            return {
-                "message": feature_logic
-            }
+            feature_logic = (
+                LogicFactory()
+                .get_logic(dbtype=data.get("dbtype", "feature"))
+                .save_fl(feature_data)
+            )
+
+            return {"message": feature_logic}
         except Exception as e:
             raise e
 
     def get(self):
         data = LogicFactory().get_logic(dbtype="dynamic_feature").get_fl()
-        return {
-            "calculated": data
-        }
+        return {"calculated": data}
 
 
 def init_resources(api: Api):
