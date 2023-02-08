@@ -21,6 +21,9 @@ class Feature(db.Model):
 
 
 class MasterKeys(db.Model):
+
+    __tablename__ = "master_keys"
+
     id: int = Column(Integer, primary_key=True)
     entity_key: int = Column(Integer, unique=True)
     entity_key_mame = Column(String(30))
@@ -30,6 +33,9 @@ class MasterKeys(db.Model):
 
 
 class DynamicFeature(db.Model):
+
+    __tablename__ = "dynamic_feature"
+
     id: int = Column(Integer, primary_key=True)
     entry_name: str = Column(String(30), nullable=False)
     entry_value: str = Column(String(50), nullable=False)

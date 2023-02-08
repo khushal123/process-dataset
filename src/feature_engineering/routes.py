@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource, Api
 from flask_restful import reqparse
 from .logic import LogicFactory
-
+from .transform import PandasTransform
 import logging
 
 
@@ -26,12 +26,19 @@ class FeatureEngineering(Resource):
             )
 
             return {"message": feature_logic}
-        except Exception as e:
-            raise e
+        except:
+            return {"error": "failed"}
 
     def get(self):
-        data = LogicFactory().get_logic(dbtype="dynamic_feature").get_fl()
-        return {"calculated": data}
+        try:
+            data = (
+                LogicFactory()
+                .get_logic(dbtype="dynamic_feature")
+                .get_fl(PandasTransform())
+            )
+            return data
+        except:
+            raise ""
 
 
 def init_resources(api: Api):

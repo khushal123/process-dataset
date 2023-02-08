@@ -1,12 +1,12 @@
 from datetime import datetime
 from sqlalchemy import func, text
+import traceback
 from abc import ABC, abstractmethod
-import pandas as pd
 import logging
 from .models import db, Feature, DynamicFeature, MasterKeys
-from settings import DATABASE_URL
+from sqlalchemy import insert
 from .helpers import group_by_key
-import pdb
+
 
 logger = logging.getLogger("logic.py")
 
@@ -30,27 +30,30 @@ class DynamicFeatureLogic(BaseFeatureLogic):
 
     def save_fl(self, feature_data) -> bool | str:
         try:
-            logger.debug("grouping")
             grouped_feature_data = group_by_key(
                 feature_data=feature_data, key="employee_id"
             )
-            # logger.debug(grouped_feature_data)
-            db.session.bulk_insert_mappings(MasterKeys, grouped_feature_data.get("parents"))
-            db.session.bulk_insert_mappings(DynamicFeature, grouped_feature_data.get("children"))
+            statement = insert(MasterKeys.__table__).prefix_with("IGNORE")
+            db.session.execute(statement, grouped_feature_data.get("parents"))
+            db.session.commit
+
+            db.session.bulk_insert_mappings(
+                DynamicFeature, grouped_feature_data.get("children")
+            )
             db.session.commit()
             return grouped_feature_data
 
         except Exception as e:
+            print(traceback.format_exc())
             raise e
 
-    def get_fl(self):
-        """ """
-        df = pd.read_sql_table("dynamic_feature", DATABASE_URL)
-        print(df)
-        # df_unmelt = df.pivot(index='id', columns=["entry_name"])
-        # print(df_unmelt)
-
-        return "done"
+    def get_fl(self, transform):
+        try:
+            records = transform.process()
+            # print(grouped.to_dict(orient="records"))
+            return records
+        except Exception as e:
+            print(e)
 
 
 class FeatureLogic(BaseFeatureLogic):
@@ -140,5 +143,4 @@ class LogicFactory:
         }
 
     def get_logic(self, dbtype) -> FeatureLogic | DynamicFeatureLogic:
-        print(self.__logic.get(dbtype))
         return self.__logic.get(dbtype, FeatureLogic())
